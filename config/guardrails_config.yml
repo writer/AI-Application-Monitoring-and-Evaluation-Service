@@ -1,0 +1,79 @@
+models:
+  - type: main
+    engine: local
+    model: gpt-3.5-turbo
+
+rails:
+  input:
+    flows:
+      - detect_sensitive_data
+      - check_avid_vulnerabilities
+  output:
+    flows:
+      - check_output_for_sensitive_data
+
+sensitive_data_types:
+  - name: pii
+    description: "Personally Identifiable Information"
+    patterns:
+      - type: regex
+        pattern: '\b\d{3}-\d{2}-\d{4}\b'
+        description: "Social Security Number"
+      - type: regex
+        pattern: '\b\d{9}\b'
+        description: "Social Security Number (no dashes)"
+      - type: regex
+        pattern: '\b\d{3}-\d{3}-\d{4}\b'
+        description: "Phone Number"
+      - type: regex
+        pattern: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        description: "Email Address"
+  
+  - name: phi
+    description: "Protected Health Information"
+    patterns:
+      - type: regex
+        pattern: '\b\d{3}-\d{2}-\d{4}\b'
+        description: "Social Security Number"
+      - type: regex
+        pattern: '\b(patient|medical record|diagnosis|treatment|prescription)\b'
+        description: "Medical terms"
+      - type: regex
+        pattern: '\b\d{10}\b'
+        description: "Medical Record Number"
+  
+  - name: pci
+    description: "Payment Card Information"
+    patterns:
+      - type: regex
+        pattern: '\b(?:\d[ -]*?){13,16}\b'
+        description: "Credit Card Number"
+      - type: regex
+        pattern: '\b\d{3,4}\b'
+        description: "CVV"
+      - type: regex
+        pattern: '\b(0[1-9]|1[0-2])[\/\-]([0-9]{4}|[0-9]{2})\b'
+        description: "Expiration Date"
+
+  - name: ip
+    description: "Intellectual Property"
+    patterns:
+      - type: regex
+        pattern: '\b(confidential|proprietary|trade secret|copyright|patent pending)\b'
+        description: "IP indicators"
+
+actions:
+  - name: detect_pii
+    description: "Detect PII in text"
+  - name: detect_phi
+    description: "Detect PHI in text"
+  - name: detect_pci
+    description: "Detect PCI in text"
+  - name: detect_ip
+    description: "Detect IP in text"
+  - name: mask_sensitive_data
+    description: "Mask sensitive data in text"
+  - name: check_avid
+    description: "Check against AVID database"
+  - name: rehydrate_data
+    description: "Rehydrate masked data" 
