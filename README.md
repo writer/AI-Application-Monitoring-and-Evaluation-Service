@@ -232,7 +232,7 @@ guardrails_config = {
         {
             "type": "main",
             "engine": "local",
-            "model": "gpt-3.5-turbo"
+            "model": "palmyra-x-004"
         }
     ],
     "rails": {
@@ -321,7 +321,7 @@ config_text = """
 models:
   - type: main
     engine: local
-    model: gpt-3.5-turbo
+    model: palmyra-x-004
 
 rails:
   input:
